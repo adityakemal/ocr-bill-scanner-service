@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "source": "./images/test1.jpeg",
+    "processed_at": "2026-04-26T20:23:50.550Z",
+    "ocr": "Mindee"
+  },
+  "totalData": {
+    "name": "transaction Sentosa Seafood PIK",
+    "price": 480800
+  },
+  "supplier": "Sentosa Seafood PIK",
+  "date": "2022-02-20",
+  "time": "17:54:28",
+  "total_amount": 480800,
+  "total_net": 518200,
+  "total_tax": 53116,
+  "tips_gratuity": 0,
+  "document_type": "expense_receipt",
+  "purchase_category": "food",
+  "purchase_subcategory": "restaurant",
+  "locale": "",
+  "receipt_number": "",
+  "items": [
+    {
+      "name": "1 Ice Tea Tawar",
+      "price": 6000
+    },
+    {
+      "name": "1 Jus Guava",
+      "price": 22000
+    },
+    {
+      "name": "2 Hot Tea Tawar",
+      "price": 12000
+    },
+    {
+      "name": "0.62 Ikan Krapu Macan",
+      "price": 192200
+    },
+    {
+      "name": "1 Sup Tahu",
+      "price": 75000
+    },
+    {
+      "name": "3 Kerang Kampak Besar Kerang Stim B/P",
+      "price": 93000
+    },
+    {
+      "name": "0.3 Udang Rebus",
+      "price": 54000
+    },
+    {
+      "name": "0.3 Keong Macan Kerang Rebus",
+      "price": 32000
+    },
+    {
+      "name": "1 Terong Balado Petai NO PETE",
+      "price": 32000
+    }
+  ],
+  "additional_info": []
+}
