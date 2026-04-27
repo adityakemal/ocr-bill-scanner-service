@@ -4,17 +4,28 @@ Receipt OCR API service with dual providers: Mindee (AI) and Tesseract (manual).
 
 ## Tech Stack
 
-- **Runtime**: Bun
+- **Runtime**: Bun (https://bun.com)
 - **Framework**: Elysia
 - **OCR Providers**:
-  - Mindee SDK (AI-powered, get API key at https://platform.mindee.net)
+  - Mindee SDK (AI-powered, free API at https://platform.mindee.net)
   - Tesseract.js (manual OCR, no API key required)
 
-## Model ID (Mindee)
+## Environment Variables
 
+Buat file `.env` di root directory:
+
+```bash
+# Required for Mindee - get free at https://platform.mindee.net
+MINDEE_API_KEY=your_api_key_here
+
+# Optional - default: 90d93165-d8ee-4359-b276-d6f7355d3ec4
+MINDEE_MODEL_ID=90d93165-d8ee-4359-b276-d6f7355d3ec4
+
+# Optional - server port
+PORT=3000
 ```
-90d93165-d8ee-4359-b276-d6f7355d3ec4
-```
+
+**Mindee Model ID**: `90d93165-d8ee-4359-b276-d6f7355d3ec4`
 
 ## Getting Started
 
@@ -22,7 +33,6 @@ Receipt OCR API service with dual providers: Mindee (AI) and Tesseract (manual).
 
 - Bun installed (https://bun.com)
 - Mindee API key (free at https://platform.mindee.net)
-- No key needed for Tesseract
 
 ### Installation
 
@@ -33,18 +43,22 @@ bun install
 ### Run Locally
 
 ```bash
-# Method 1: Set env var langsung
-MINDEE_API_KEY=your_key bun src/index.ts
-
-# Method 2: Dari .env file
+# Pastikan .env sudah ada dengan MINDEE_API_KEY
+# Cara 1: Langsung dari .env
 source .env && bun src/index.ts
 
-# Method 3: Lewat export
-export MINDEE_API_KEY=your_key
+# Cara 2: Lewat export
+export MINDEE_API_KEY=$(grep MINDEE_API_KEY .env | cut -d'=' -f2)
+export MINDEE_MODEL_ID=$(grep MINDEE_MODEL_ID .env | cut -d'=' -f2)
 bun src/index.ts
+
+# Cara 3: Manual
+MINDEE_API_KEY=your_key bun src/index.ts
 ```
 
 Server runs on http://localhost:3000
+
+---
 
 ## API Endpoints
 
@@ -86,6 +100,14 @@ POST /ocr/mindee/base64
 }
 ```
 
+**cURL:**
+```bash
+IMAGE=$(base64 -i receipt.jpg | tr -d '\n')
+curl -X POST http://localhost:3000/ocr/mindee/base64 \
+  -H "Content-Type: application/json" \
+  -d "{\"image\": \"$IMAGE\", \"filename\": \"receipt.jpg\"}"
+```
+
 ### 3. URL
 ```
 POST /ocr/mindee/url
@@ -101,6 +123,8 @@ POST /ocr/mindee/url
 ---
 
 ## Tesseract OCR (Manual)
+
+Tanpa API key required!
 
 ### 1. File Upload
 ```
@@ -162,6 +186,8 @@ POST /ocr/tesseract/base64
 }
 ```
 
+---
+
 ## Deploy on Coolify
 
 ### 1. Build Docker Image
@@ -173,28 +199,38 @@ docker build -t ocr-service .
 ### 2. Run Container
 
 ```bash
-docker run -p 3000:3000 -e MINDEE_API_KEY=your_key ocr-service
+docker run -p 3000:3000 \
+  -e MINDEE_API_KEY=your_key \
+  -e MINDEE_MODEL_ID=90d93165-d8ee-4359-b276-d6f7355d3ec4 \
+  ocr-service
 ```
 
 ### 3. Coolify Configuration
 
 - Create new app → Select "Docker"
 - Set port: 3000
-- Set environment variable: `MINDEE_API_KEY=your_api_key`
+- Set environment variables:
+  - `MINDEE_API_KEY=your_api_key`
+  - `MINDEE_MODEL_ID=90d93165-d8ee-4359-b276-d6f7355d3ec4` (optional)
+
+---
 
 ## Testing with Postman
 
 ### Mindee - File Upload
-1. Method: POST
-2. URL: `http://localhost:3000/ocr/mindee/file`
-3. Body: form-data → Key: `file` (File) → select image
+```
+Method: POST
+URL: http://localhost:3000/ocr/mindee/file
+Body: form-data
+Key: file (File) → select image
+```
 
 ### Mindee - Base64
-1. Method: POST
-2. URL: `http://localhost:3000/ocr/mindee/base64`
-3. Headers: `Content-Type: application/json`
-4. Body:
-```json
+```
+Method: POST
+URL: http://localhost:3000/ocr/mindee/base64
+Headers: Content-Type: application/json
+Body:
 {
   "image": "base64_string...",
   "filename": "receipt.jpg"
@@ -202,19 +238,24 @@ docker run -p 3000:3000 -e MINDEE_API_KEY=your_key ocr-service
 ```
 
 ### Tesseract - File Upload
-1. Method: POST
-2. URL: `http://localhost:3000/ocr/tesseract/file`
-3. Body: form-data → Key: `file` (File) → select image
+```
+Method: POST
+URL: http://localhost:3000/ocr/tesseract/file
+Body: form-data
+Key: file (File) → select image
+```
+
+---
 
 ## Endpoints Reference
 
-| Provider | Method | Endpoint |
-|----------|--------|----------|
-| Mindee | POST | `/ocr/mindee/file` |
-| Mindee | POST | `/ocr/mindee/base64` |
-| Mindee | POST | `/ocr/mindee/url` |
-| Tesseract | POST | `/ocr/tesseract/file` |
-| Tesseract | POST | `/ocr/tesseract/base64` |
+| Provider | Method | Endpoint | API Key |
+|----------|--------|----------|---------|
+| Mindee | POST | `/ocr/mindee/file` | Required |
+| Mindee | POST | `/ocr/mindee/base64` | Required |
+| Mindee | POST | `/ocr/mindee/url` | Required |
+| Tesseract | POST | `/ocr/tesseract/file` | Not needed |
+| Tesseract | POST | `/ocr/tesseract/base64` | Not needed |
 
 ## License
 

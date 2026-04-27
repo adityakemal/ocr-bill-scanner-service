@@ -1,7 +1,7 @@
 import * as mindee from "mindee";
 
 const MINDEE_API_KEY = process.env.MINDEE_API_KEY || "";
-const MODEL_ID = "90d93165-d8ee-4359-b276-d6f7355d3ec4";
+const MODEL_ID = process.env.MINDEE_MODEL_ID || "90d93165-d8ee-4359-b276-d6f7355d3ec4";
 
 interface LineItem {
   name: string;
